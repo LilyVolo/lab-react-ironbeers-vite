@@ -23,34 +23,41 @@ function AllBeersPage() {
       }, []);
 
       if (!beers) {return <div className="loading">Loading...</div>}
-    return (
 
+      function handleSearch(event) {
+        fetchAllBeers(event.target.value)
+      }
+      async function fetchAllBeers(str = "") {
+        try {
+          const response = await axios.get(`${baseURL}/search?q=${str}`)
+          setBeers(response.data)
+        } catch (error) {
+          console.error(error.message)
+        }
+      }
             
-	
-		<div>
-			{beers.map((el) => {
-          
+      return (
+        <>
+			<h2>All Beers</h2>
+			<div>
+				<h3>Search</h3>
+				<input
+					type="search"
+					placeholder="You know the drill"
+					onChange={handleSearch}
+				/>
+			</div>
+			{beers.map((beer) => {
 				return (
-                   
-					<article key={el._id}>
-						<Link to={`/beers/${el._id}`}>
-                            <img src={el.image_url} style={{ width: "5rem" }} alt="" />
-							<h2>{el.name}</h2>
-                            <h5>{el.tagline}</h5>
-                            <h5>{el.contributed_by}</h5>
+					<div key={beer._id}>
+						<Link to={`/beers/${beer._id}`}>
+							<p>{beer.name}</p>
 						</Link>
-					</article>
-         
+					</div>
 				)
 			})}
-		</div>
+		</>
 	)
-
-       
-    
-
-
-
-}
+              }
 
 export default AllBeersPage;
